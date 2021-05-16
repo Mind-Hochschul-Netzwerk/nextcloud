@@ -33,12 +33,12 @@ services:
       - traefik
     volumes:
       - ${DATA_DIR}/app/html:/var/www/html
+      - ${DATA_DIR}/app/config:/var/www/html/config
+      - ${DATA_DIR}/app/data:/var/www/html/data
       - ${DATA_DIR}/app/custom_apps:/var/www/html/custom_apps
-      # - ./wait-for-it/wait-for-it.sh:/bin/wait-for-it.sh
-      # entrypoint: sh -c '/bin/wait-for-it.sh db:5432 --timeout=120 && /entrypoint.sh apache2-foreground'
     environment:
       - NEXTCLOUD_TRUSTED_DOMAINS=${DOMAINNAME} app
-      - TRUSTED_PROXIES=${NEXTCLOUD_SUBNET} %{TRAEFIK_SUBNET}
+      - TRUSTED_PROXIES=${NEXTCLOUD_SUBNET} ${TRAEFIK_SUBNET}
       - OVERWRITEHOST=cloud.${DOMAINNAME}
       - OVERWRITEPROTOCOL=https
       - MYSQL_HOST=db
@@ -72,7 +72,10 @@ services:
       - db
       - redis
     volumes:
-      - "${DATA_DIR}/app/html:/var/www/html"
+      - ${DATA_DIR}/app/html:/var/www/html
+      - ${DATA_DIR}/app/config:/var/www/html/config
+      - ${DATA_DIR}/app/data:/var/www/html/data
+      - ${DATA_DIR}/app/custom_apps:/var/www/html/custom_apps
     entrypoint: /cron.sh
 
 networks:

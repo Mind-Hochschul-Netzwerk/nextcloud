@@ -12,6 +12,9 @@ services:
       - redis
       - app
     volumes:
+      - ${DATA_DIR}/app/html:/var/www/html
+      - ${DATA_DIR}/app/config:/var/www/html/config
+      - ${DATA_DIR}/app/data:/var/www/html/data
       - ${DATA_DIR}/app/custom_apps:/var/www/html/custom_apps
     environment:
       - PORT=7867
