@@ -31,6 +31,7 @@ services:
     networks:
       - ncloud_int
       - traefik
+      - ldap
     volumes:
       - ${DATA_DIR}/app/html:/var/www/html
       - ${DATA_DIR}/app/config:/var/www/html/config
@@ -82,6 +83,9 @@ networks:
   traefik:
     external:
       name: traefik
+  ldap:
+    external:
+      name: ldap
   ncloud_int:
     driver: bridge
     ipam:

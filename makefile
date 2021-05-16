@@ -1,15 +1,21 @@
+check-traefik:
+ifeq (,$(shell docker ps -f name=^traefik$$ -q))
+	$(error docker container traefik is not running)
+endif
+
+check-ldap:
+ifeq (,$(shell docker ps -f name=^ldap$$ -q))
+	$(error docker container traefik is not running)
+endif
+
 .env:
 	$(error .env is missing)
 
-prod: .env
+prod: .env check-traefik check-ldap
 	@echo "Starting Production Server"
 	docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up -d --force-recreate
 
-stop: .env
-	@echo "Starting Production Server"
-	docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml down
-
-bootstrap: .env
+bootstrap: .env check-traefik check-ldap
 	@echo "Starting everything except notify_push"
 	docker-compose -f docker-compose.base.yml up -d --force-recreate --remove-orphans
 
