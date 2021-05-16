@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  notify_push:
+    image: nextcloud:latest
+    restart: always
+    networks:
+      - ncloud_int
+      - traefik
+    depends_on:
+      - db
+      - redis
+      - app
+    volumes:
+      - ${DATA_DIR}/app/custom_apps:/var/www/html/custom_apps
+    environment:
+      - PORT=7867
+      - NEXTCLOUD_URL=http://app # don't go through the proxy to contact the nextcloud server
+    entrypoint: /var/www/html/custom_apps/notify_push/bin/x86_64/notify_push /var/www/html/config/config.php
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nextcloud_push.priority=2
+      - traefik.http.routers.nextcloud_push.entryPoints=websecure
+      - traefik.http.services.nextcloud_push.loadbalancer.server.port=7867
+      - traefik.http.routers.nextcloud_push.middlewares=nextcloud_strip_push,nextcloud-redirregex,secheader@file
+      - traefik.http.routers.nextcloud_push.tls=true
+      - traefik.http.routers.nextcloud_push.tls.certresolver=myresolver
+      # necessary for the notify_push app to work:
+      - traefik.http.routers.nextcloud_push.rule=Host(`cloud.${DOMAINNAME}`) && PathPrefix(`/push`)
+      - traefik.http.middlewares.nextcloud_strip_push.stripprefix.prefixes=/push
