@@ -26,8 +26,6 @@ services:
       - traefik.http.routers.nextcloud_push.entryPoints=websecure
       - traefik.http.services.nextcloud_push.loadbalancer.server.port=7867
       - traefik.http.routers.nextcloud_push.middlewares=nextcloud_strip_push,nextcloud-redirregex,secheader@file
-      - traefik.http.routers.nextcloud_push.tls=true
-      - traefik.http.routers.nextcloud_push.tls.certresolver=myresolver
       # necessary for the notify_push app to work:
       - traefik.http.routers.nextcloud_push.rule=Host(`cloud.${DOMAINNAME}`) && PathPrefix(`/push`)
       - traefik.http.middlewares.nextcloud_strip_push.stripprefix.prefixes=/push
