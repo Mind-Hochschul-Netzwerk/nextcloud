@@ -13,15 +13,15 @@ endif
 
 prod: .env check-traefik check-ldap
 	@echo "Starting Production Server"
-	ensurevolumes.sh
+	./ensurevolumes.sh
 	docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up -d --force-recreate
 
 bootstrap: .env check-traefik check-ldap
 	@echo "Starting everything except notify_push"
-	ensurevolumes.sh
+	./ensurevolumes.sh
 	docker-compose -f docker-compose.base.yml up -d --force-recreate --remove-orphans
 
 database: .env
 	@echo "Starging Database"
-	ensurevolumes.sh
+	./ensurevolumes.sh
 	docker-compose -f docker-compose.base.yml up -d --force-recreate database
