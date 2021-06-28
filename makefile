@@ -5,7 +5,7 @@ endif
 
 check-ldap:
 ifeq (,$(shell docker ps -f name=^ldap$$ -q))
-	$(error docker container traefik is not running)
+	$(error docker container ldap is not running)
 endif
 
 .env:
