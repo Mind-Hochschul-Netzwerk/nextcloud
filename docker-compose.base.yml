@@ -6,7 +6,7 @@ services:
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW
     restart: unless-stopped
     volumes:
-      - ${DATA_DIR}/mariadb:/var/lib/mysql
+      - ${VOLUMES_DIR}/mariadb:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD
       - MYSQL_PASSWORD
@@ -19,7 +19,7 @@ services:
     image: redis:latest
     restart: unless-stopped
     volumes:
-      - "${DATA_DIR}/redis:/data"
+      - "${VOLUMES_DIR}/redis:/data"
     expose:
       - 6379
     networks:
@@ -33,10 +33,10 @@ services:
       - traefik
       - ldap
     volumes:
-      - ${DATA_DIR}/app/html:/var/www/html
-      - ${DATA_DIR}/app/config:/var/www/html/config
-      - ${DATA_DIR}/app/data:/var/www/html/data
-      - ${DATA_DIR}/app/custom_apps:/var/www/html/custom_apps
+      - ${VOLUMES_DIR}/app/html:/var/www/html
+      - ${VOLUMES_DIR}/app/config:/var/www/html/config
+      - ${VOLUMES_DIR}/app/data:/var/www/html/data
+      - ${VOLUMES_DIR}/app/custom_apps:/var/www/html/custom_apps
     environment:
       - NEXTCLOUD_TRUSTED_DOMAINS=${DOMAINNAME} app
       - TRUSTED_PROXIES=${NEXTCLOUD_SUBNET} ${TRAEFIK_SUBNET}
@@ -71,10 +71,10 @@ services:
       - db
       - redis
     volumes:
-      - ${DATA_DIR}/app/html:/var/www/html
-      - ${DATA_DIR}/app/config:/var/www/html/config
-      - ${DATA_DIR}/app/data:/var/www/html/data
-      - ${DATA_DIR}/app/custom_apps:/var/www/html/custom_apps
+      - ${VOLUMES_DIR}/app/html:/var/www/html
+      - ${VOLUMES_DIR}/app/config:/var/www/html/config
+      - ${VOLUMES_DIR}/app/data:/var/www/html/data
+      - ${VOLUMES_DIR}/app/custom_apps:/var/www/html/custom_apps
     entrypoint: /cron.sh
 
 networks:
