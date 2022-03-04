@@ -79,11 +79,9 @@ services:
 
 networks:
   traefik:
-    external:
-      name: traefik
+    name: traefik
   ldap:
-    external:
-      name: ldap
+    name: ldap
   ncloud_int:
     driver: bridge
     ipam:
