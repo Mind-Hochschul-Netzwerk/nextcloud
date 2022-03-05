@@ -2,32 +2,28 @@ version: "3"
 
 services:
   db:
-    image: mariadb
-    command: --transaction-isolation=READ-COMMITTED --log-bin=ROW
+    image: postgres:14
     restart: unless-stopped
-    volumes:
-      - ${VOLUMES_DIR}/mariadb:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
     networks:
       - ncloud_int
+    volumes:
+      - ${VOLUMES_DIR}/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
 
   redis:
-    image: redis:latest
+    image: redis:6
     restart: unless-stopped
     volumes:
       - "${VOLUMES_DIR}/redis:/data"
-    expose:
-      - 6379
     networks:
       - ncloud_int
 
   app:
-    image: nextcloud:latest
-    restart: always
+    image: nextcloud:${NEXTCLOUD_VERSION}
+    restart: unless-stopped
     networks:
       - ncloud_int
       - traefik
@@ -39,16 +35,16 @@ services:
       - ${VOLUMES_DIR}/app/custom_apps:/var/www/html/custom_apps
     environment:
       - NEXTCLOUD_TRUSTED_DOMAINS=${DOMAINNAME} app
+      - NEXTCLOUD_ADMIN_USER
+      - NEXTCLOUD_ADMIN_PASSWORD
       - TRUSTED_PROXIES=${NEXTCLOUD_SUBNET} ${TRAEFIK_SUBNET}
       - OVERWRITEHOST=cloud.${DOMAINNAME}
       - OVERWRITEPROTOCOL=https
-      - MYSQL_HOST=db
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
-      - NEXTCLOUD_ADMIN_PASSWORD
-      - NEXTCLOUD_ADMIN_USER
+      - POSTGRES_HOST=db:5432
       - REDIS_HOST=redis
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - POSTGRES_PASSWORD
     depends_on:
       - db
       - redis
@@ -63,8 +59,8 @@ services:
       - "traefik.http.middlewares.nextcloud-redirregex.redirectregex.replacement=https://$${1}/remote.php/dav/"
 
   cron:
-    image: nextcloud:latest
-    restart: always
+    image: nextcloud:${NEXTCLOUD_VERSION}
+    restart: unless-stopped
     networks:
       - ncloud_int
     depends_on:
