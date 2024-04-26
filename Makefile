@@ -1,16 +1,14 @@
-# Launch Targets:
+include .env
 
-launch: .env check-traefik check-ldap
+launch: check-traefik check-ldap
 	@echo "Starting Nextcloud"
-	./ensurevolumes.sh
-	docker-compose -f docker-compose.yml up -d --force-recreate --remove-orphans
+	docker compose up -d --force-recreate --remove-orphans app
 
-database: .env
-	@echo "Starging Database"
-	./ensurevolumes.sh
-	docker-compose -f docker-compose.yml up -d --force-recreate db
+database:
+	@echo "Starting Database"
+	docker compose up -d --force-recreate db
 
-# Helepers:
+# Helpers:
 
 check-traefik:
 ifeq (,$(shell docker ps -f name=^traefik$$ -q))
