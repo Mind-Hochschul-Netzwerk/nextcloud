@@ -2,7 +2,7 @@ include .env
 
 launch: check-traefik check-ldap
 	@echo "Starting Nextcloud"
-	docker compose up -d --force-recreate --remove-orphans app
+	docker compose up -d --force-recreate --remove-orphans
 
 database:
 	@echo "Starting Database"
