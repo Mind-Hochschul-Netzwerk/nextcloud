@@ -51,11 +51,18 @@ services:
       - traefik.http.routers.nextcloud.priority=1
       - traefik.http.routers.nextcloud.entrypoints=websecure
       - traefik.http.routers.nextcloud.rule=Host(`cloud.${DOMAINNAME}`)
-      - traefik.http.routers.nextcloud.middlewares=nextcloud-redirregex
+      - traefik.http.routers.nextcloud.middlewares=nextcloud-redirregex,nextcloud-headers
       - traefik.http.middlewares.nextcloud-redirregex.redirectregex.permanent=true
       - "traefik.http.middlewares.nextcloud-redirregex.redirectregex.regex=^https://(.*)/.well-known/(card|cal)dav"
       - "traefik.http.middlewares.nextcloud-redirregex.redirectregex.replacement=https://$${1}/remote.php/dav/"
-
+      - traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.nextcloud-headers.headers.stsPreload=true
+      - traefik.http.middlewares.nextcloud-headers.headers.stsSeconds=31536000
+      - traefik.http.middlewares.nextcloud-headers.headers.forcestsheader=true
+      - traefik.http.middlewares.nextcloud-headers.headers.contentSecurityPolicy="frame-ancestors https://*.mind-hochschul-netzwerk.de https://*.localhost"
+      - traefik.http.middlewares.nextcloud-headers.headers.accesscontrolmaxage=100
+      - traefik.http.middlewares.nextcloud-headers.headers.addVaryHeader=true
+      - traefik.http.middlewares.nextcloud-headers.headers.addVaryHeader=true
   cron:
     image: nextcloud:${NEXTCLOUD_VERSION}
     restart: unless-stopped
