@@ -49,7 +49,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.nextcloud.priority=1
-      - traefik.http.routers.nextcloud.entrypoints=websecure
       - traefik.http.routers.nextcloud.rule=Host(`cloud.${DOMAINNAME}`)
       - traefik.http.routers.nextcloud.middlewares=nextcloud-redirregex,nextcloud-headers
       - traefik.http.middlewares.nextcloud-redirregex.redirectregex.permanent=true
